@@ -9,6 +9,57 @@ $ conda create --name tf2-cpu tensorflow
 
 ## Matrix Multiplication Example
 
+Below is the TensorFlow script:
+
+```python
+from time import perf_counter
+
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
+import tensorflow as tf
+
+#tf.debugging.set_log_device_placement(True)
+#print(tf.config.experimental.list_physical_devices())
+#tf.config.threading.set_inter_op_parallelism_threads(0)
+#tf.config.threading.set_intra_op_parallelism_threads(0)
+
+times = []
+N = 10000
+x = tf.random.normal((N, N), dtype=tf.dtypes.float64)
+for _ in range(5):
+  t0 = perf_counter()
+  y = tf.linalg.matmul(x, x)
+  elapsed_time = perf_counter() - t0
+  times.append(elapsed_time)
+print("Execution time: ", min(times))
+print("TensorFlow version: ", tf.__version__)
+print(times)
+```
+
+Below is the Slurm script:
+
+| cpus-per-task (or threads)| execution time (s) | speed-up ratio |  parallel efficiency |
+|:--------------------------:|:--------:|:---------:|:-------------------:|
+| 1                          |  20.1    |   1.0     |   100%              |
+| 2                          |  13.7    |   1.5     |   73%               | 
+| 4                          |  7.1     |   2.8     |   71%               |
+| 8                          |  3.1     |   6.5     |   81%               |
+| 16                         |  1.8     |   11.2    |   70%               |
+| 32                         |  1.0     |   20.1    |   63%               |
+
+The calculation was performed on Adroit using a square matrix of size 10000. 
+
+When the following line is added:
+
+```
+print(tf.config.experimental.list_physical_devices())
+```
+
+The corresponding output is
+
+```
+```
 
 ## CIFAR10 Example
 
