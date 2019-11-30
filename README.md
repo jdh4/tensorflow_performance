@@ -83,7 +83,18 @@ print(tf.config.experimental.list_physical_devices())
 The corresponding output is
 
 ```
+[PhysicalDevice(name='/physical_device:CPU:0', device_type='CPU'), PhysicalDevice(name='/physical_device:XLA_CPU:0', device_type='XLA_CPU')]
 ```
+
+When 8 threads were used and the following lines are enabled:
+
+```
+tf.config.threading.set_inter_op_parallelism_threads(m)
+tf.config.threading.set_intra_op_parallelism_threads(n)
+```
+
+The execution time was found to largely insensitive to the values of `m` and `n`. 
+
 
 ## CIFAR10 Example
 
