@@ -1,4 +1,4 @@
-# Tensorflow Performance
+# Tensorflow Performance (CPU-only)
 
 ## Installation
 
@@ -22,13 +22,10 @@ $ python -c "import tensorflow as tf; tf.keras.datasets.cifar10.load_data()"
 
 ```python
 from __future__ import absolute_import, division, print_function, unicode_literals
-
 import tensorflow as tf
-
 from tensorflow.keras import datasets, layers, models
 
 (train_images, train_labels), (test_images, test_labels) = datasets.cifar10.load_data()
-
 train_images, test_images = train_images / 255.0, test_images / 255.0
 
 model = models.Sequential()
@@ -37,7 +34,6 @@ model.add(layers.MaxPooling2D((2, 2)))
 model.add(layers.Conv2D(64, (3, 3), activation='relu'))
 model.add(layers.MaxPooling2D((2, 2)))
 model.add(layers.Conv2D(64, (3, 3), activation='relu'))
-
 model.add(layers.Flatten())
 model.add(layers.Dense(64, activation='relu'))
 model.add(layers.Dense(10, activation='softmax'))
@@ -65,8 +61,13 @@ Below is the Slurm script:
 #SBATCH --mem=4G                 # total memory per node
 #SBATCH --time=00:10:00          # total run time limit (HH:MM:SS)
 
+# set the number of threads
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+
+# allow threads to transition quickly (Intel MKL-DNN)
 export KMP_BLOCKTIME=0
+
+# bind threads to cores (Intel MKL-DNN)
 export KMP_AFFINITY=granularity=fine,compact,0,0
 
 module load anaconda3
