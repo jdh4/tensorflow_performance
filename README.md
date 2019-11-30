@@ -20,6 +20,8 @@ $ conda activate tf2-gpu
 $ python -c "import tensorflow as tf; tf.keras.datasets.cifar10.load_data()"
 ```
 
+Below is the TensorFlow script taken from the [tutorials](https://www.tensorflow.org/tutorials/images/cnn):
+
 ```python
 from __future__ import absolute_import, division, print_function, unicode_literals
 import tensorflow as tf
@@ -77,9 +79,9 @@ srun python cifar.py
 ```
 
 Note that `MKL_NUM_THREADS` could be used instead of `OMP_NUM_THREADS`. The parallelism is believed to be coming from routines
-in the Intel MKL-DNN.
+in the Intel MKL-DNN. If the number of threads is not set then the job runs very slowly requiring more than 10 minutes to complete.
 
-Execution times were measured using `seff`.
+Execution times were taken `seff` as the "Job Wall-clock time".
 
 | cpus-per-task (or threads)| execution time (s) | speed-up ratio |  parallel efficiency |
 |:--------------------------:|:--------:|:---------:|:-------------------:|
