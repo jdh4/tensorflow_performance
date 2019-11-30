@@ -39,7 +39,7 @@ print(times)
 
 Below is the Slurm script:
 
-```
+```bash
 #!/bin/bash
 #SBATCH --job-name=tf2-matmul    # create a short name for your job
 #SBATCH --nodes=1                # node count
@@ -85,6 +85,8 @@ The corresponding output is
 ```
 [PhysicalDevice(name='/physical_device:CPU:0', device_type='CPU'), PhysicalDevice(name='/physical_device:XLA_CPU:0', device_type='XLA_CPU')]
 ```
+
+The above is consistent with TensorFlow labeling all available cores under `CPU:0`. This is true even with having 2 physical CPUs per node. Is it possible to assign 16 cores to `CPU:0` and 16 to `CPU:1`?
 
 When 8 threads were used and the following lines are enabled:
 
