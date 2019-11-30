@@ -48,9 +48,13 @@ Below is the Slurm script:
 #SBATCH --mem=8G                 # total memory per node
 #SBATCH --time=00:05:00          # total run time limit (HH:MM:SS)
 
+# set the number of threads
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
+# allow threads to transition quickly (Intel MKL-DNN)
 export KMP_BLOCKTIME=0
+
+# bind threads to cores (Intel MKL-DNN)
 export KMP_AFFINITY=granularity=fine,compact,0,0
 
 module load anaconda3
