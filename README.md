@@ -39,6 +39,26 @@ print(times)
 
 Below is the Slurm script:
 
+```
+#!/bin/bash
+#SBATCH --job-name=tf2-matmul    # create a short name for your job
+#SBATCH --nodes=1                # node count
+#SBATCH --ntasks=1               # total number of tasks across all nodes
+#SBATCH --cpus-per-task=1        # cpu-cores per task (>1 if multi-threaded tasks)
+#SBATCH --mem=8G                 # total memory per node
+#SBATCH --time=00:05:00          # total run time limit (HH:MM:SS)
+
+export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+
+export KMP_BLOCKTIME=0
+export KMP_AFFINITY=granularity=fine,compact,0,0
+
+module load anaconda3
+conda activate tf2-cpu
+
+srun python mm.py
+```
+
 | cpus-per-task (or threads)| execution time (s) | speed-up ratio |  parallel efficiency |
 |:--------------------------:|:--------:|:---------:|:-------------------:|
 | 1                          |  20.1    |   1.0     |   100%              |
