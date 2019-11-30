@@ -79,7 +79,7 @@ srun python cifar.py
 ```
 
 Note that `MKL_NUM_THREADS` could be used instead of `OMP_NUM_THREADS`. The parallelism is believed to be coming from routines
-in the Intel MKL-DNN. If the number of threads is not set then the job runs very slowly requiring more than 10 minutes to complete.
+in the Intel MKL-DNN library. If the number of threads is not set then the job runs very slowly requiring more than 10 minutes to complete.
 
 | cpus-per-task (or threads)| execution time (s) | speed-up ratio |  parallel efficiency |
 |:--------------------------:|:--------:|:---------:|:-------------------:|
@@ -90,4 +90,4 @@ in the Intel MKL-DNN. If the number of threads is not set then the job runs very
 | 16                         |  118     |   1.6     |   10%               |
 | 32                         |  119     |   1.6     |    5%               |
 
-Execution times were taken `seff` as the "Job Wall-clock time". The data was generated on Adroit.
+Execution times were taken from `seff` as the "Job Wall-clock time". The data was generated on Adroit.
