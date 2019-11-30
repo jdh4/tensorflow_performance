@@ -95,7 +95,7 @@ tf.config.threading.set_inter_op_parallelism_threads(m)
 tf.config.threading.set_intra_op_parallelism_threads(n)
 ```
 
-The execution time was found to largely insensitive to the values of `m` and `n`. 
+The execution time was found to be largely insensitive to the values of `m` and `n`. 
 
 
 ## CIFAR10 Example
