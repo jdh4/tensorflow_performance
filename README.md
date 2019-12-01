@@ -95,8 +95,7 @@ tf.config.threading.set_inter_op_parallelism_threads(m)
 tf.config.threading.set_intra_op_parallelism_threads(n)
 ```
 
-The execution time was found to be largely insensitive to the values of `m` and `n`. 
-
+The execution time was found to be largely insensitive to the values of `m` and `n`. When `tf.debugging.set_log_device_placement(True)` is added we find `Executing op _MklMatMul in device` indicating that the MKL-DNN library was used.
 
 ## CIFAR10 Example
 
