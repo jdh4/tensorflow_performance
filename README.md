@@ -4,7 +4,7 @@
 
 ```
 $ module load anaconda3
-$ conda create --name tf2-cpu tensorflow
+$ conda create --name tf2-cpu tensorflow=2.0
 ```
 
 ## Matrix Multiplication Example
@@ -96,6 +96,65 @@ tf.config.threading.set_intra_op_parallelism_threads(n)
 ```
 
 The execution time was found to be largely insensitive to the values of `m` and `n`. When `tf.debugging.set_log_device_placement(True)` is added we find `Executing op _MklMatMul in device` indicating that an Intel MKL library was used.
+
+## MNIST Example
+
+Below is the simple MNIST example from the TensorFlow website:
+
+```python
+from __future__ import absolute_import, division
+from __future__ import print_function
+from __future__ import unicode_literals
+
+import tensorflow as tf
+
+mnist = tf.keras.datasets.mnist
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+x_train, x_test = x_train / 255.0, x_test / 255.0
+
+model = tf.keras.models.Sequential([
+  tf.keras.layers.Flatten(input_shape=(28, 28)),
+  tf.keras.layers.Dense(128, activation='relu'),
+  tf.keras.layers.Dropout(0.2),
+  tf.keras.layers.Dense(10, activation='softmax')])
+
+model.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
+
+model.fit(x_train, y_train, epochs=10)
+model.evaluate(x_test, y_test)
+```
+
+Below is the Slurm script:
+
+```python
+#!/bin/bash
+#SBATCH --job-name=tf2-mnist     # create a short name for your job
+#SBATCH --nodes=1                # node count
+#SBATCH --ntasks=1               # total number of tasks across all nodes
+#SBATCH --cpus-per-task=1        # cpu-cores per task (>1 if multi-threaded tasks)
+#SBATCH --mem=4G                 # total memory per node
+#SBATCH --time=00:02:00          # total run time limit (HH:MM:SS)
+
+export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+
+module load anaconda3
+conda activate tf2-cpu
+
+time srun python mnist2_classify.py
+```
+
+Here are the timings:
+
+| cpus-per-task (or threads)| execution time (s) | speed-up ratio |  parallel efficiency |
+|:--------------------------:|:--------:|:---------:|:-------------------:|
+| 1                          |  31     |   1.0     |   100%              |
+| 2                          |  49     |   0.6     |   32%               | 
+| 4                          |  37     |   0.8     |   21%               |
+| 8                          |  70     |   0.4     |    6%               |
+
+It appears that the use of multiple threads in this case leads to increased execution times. This may be because the network is quite small and there is an overhead penalty for using multiple threads.
 
 ## CIFAR10 Example
 
