@@ -154,7 +154,7 @@ Here are the timings:
 | 4                          |  37     |   0.8     |   21%               |
 | 8                          |  70     |   0.4     |    6%               |
 
-It appears that the use of multiple threads in this case leads to increased execution times. This may be because the network is quite small and there is an overhead penalty for using multiple threads.
+The use of multiple threads in this case leads to increased execution times. This may be because the network is quite small and there is an overhead penalty for using multiple threads.
 
 ## CIFAR10 Example
 
