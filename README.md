@@ -7,6 +7,27 @@ $ module load anaconda3
 $ conda create --name tf2-cpu tensorflow=2.0
 ```
 
+Here are selected packages that are installed:
+
+```
+blas               pkgs/main/linux-64::blas-1.0-mkl
+...
+intel-openmp       pkgs/main/linux-64::intel-openmp-2019.4-243
+...
+mkl                pkgs/main/linux-64::mkl-2019.4-243
+mkl-service        pkgs/main/linux-64::mkl-service-2.3.0-py37he904b0f_0
+mkl_fft            pkgs/main/linux-64::mkl_fft-1.0.15-py37ha843d7b_0
+mkl_random         pkgs/main/linux-64::mkl_random-1.1.0-py37hd6b4f25_0
+...
+numpy              pkgs/main/linux-64::numpy-1.17.4-py37hc1035e2_0
+numpy-base         pkgs/main/linux-64::numpy-base-1.17.4-py37hde5b4d6_0
+...
+scipy              pkgs/main/linux-64::scipy-1.3.1-py37h7c811a0_0
+...
+```
+
+We see that several packages based on the Intel Math kernel Library (MKL) are installed with TensorFlow.
+
 ## Parallelism
 
 The starting point for taking advantage of parallelism in TensorFlow on CPUs is to try to vary the number of threads via `cpus-per-task`. It is important to set `OMP_NUM_THREADS` in the Slurm script. One can also set tuning parameters of the Intel MKL-DNN library. Naively setting `ntasks` to a value greater than 1 will lead to the same code being run `ntasks` times instead of the work being divided over `ntasks` tasks. For working with multiple nodes see [tf.distribute.experimental.MultiWorkerMirroredStrategy](https://www.tensorflow.org/tutorials/distribute/multi_worker_with_keras).
