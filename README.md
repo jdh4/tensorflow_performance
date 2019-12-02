@@ -72,7 +72,7 @@ Below is the Slurm script:
 #SBATCH --job-name=tf2-matmul    # create a short name for your job
 #SBATCH --nodes=1                # node count
 #SBATCH --ntasks=1               # total number of tasks across all nodes
-#SBATCH --cpus-per-task=1        # cpu-cores per task (>1 if multi-threaded tasks)
+#SBATCH --cpus-per-task=<num>    # cpu-cores per task (>1 if multi-threaded tasks)
 #SBATCH --mem=8G                 # total memory per node
 #SBATCH --time=00:05:00          # total run time limit (HH:MM:SS)
 
@@ -165,7 +165,7 @@ Below is the Slurm script:
 #SBATCH --job-name=tf2-mnist     # create a short name for your job
 #SBATCH --nodes=1                # node count
 #SBATCH --ntasks=1               # total number of tasks across all nodes
-#SBATCH --cpus-per-task=1        # cpu-cores per task (>1 if multi-threaded tasks)
+#SBATCH --cpus-per-task=<num>    # cpu-cores per task (>1 if multi-threaded tasks)
 #SBATCH --mem=4G                 # total memory per node
 #SBATCH --time=00:02:00          # total run time limit (HH:MM:SS)
 
@@ -174,7 +174,7 @@ export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 module load anaconda3
 conda activate tf2-cpu
 
-time srun python mnist2_classify.py
+srun python mnist2_classify.py
 ```
 
 Here are the timings:
@@ -186,7 +186,7 @@ Here are the timings:
 | 4                          |  37     |   0.8     |   21%               |
 | 8                          |  70     |   0.4     |    6%               |
 
-The use of multiple threads in this case leads to increased execution times. This may be because the network is quite small and there is an overhead penalty for using multiple threads.
+The use of multiple threads in this case leads to increased execution times. This may be because the neural network is quite small and there is an overhead penalty for using multiple threads.
 
 ## CIFAR10 Example
 
