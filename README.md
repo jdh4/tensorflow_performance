@@ -194,7 +194,7 @@ Here are the timings:
 
 The use of multiple threads in this case leads to increased execution times. This may be because the neural network is quite small and there is an overhead penalty for using multiple threads.
 
-## MNIST Example with the Sequential API
+## MNIST Example with the Subclassing API
 
 Obtain the data:
 
@@ -307,7 +307,6 @@ Below is the Slurm script:
 #SBATCH --time=00:05:00          # total run time limit (HH:MM:SS)
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
-
 export KMP_BLOCKTIME=0
 export KMP_AFFINITY=granularity=fine,compact,0,0
 
@@ -329,7 +328,8 @@ Here are the timings:
 | 16                         |  61     |   3.5     |   22%               |
 | 32                         |  40     |   5.4     |    17%               |
 
-Execution times were taken from `seff` as the "Job Wall-clock time". The data was generated on Adroit.
+Execution times were taken from `seff` as the "Job Wall-clock time". The data was generated on Adroit. If `KMP_BLOCKTIME`
+and `KMP_AFFINITY` are not set then the job runs very slowly.
 
 ## CIFAR10 Example
 
