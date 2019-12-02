@@ -237,7 +237,7 @@ Below is the Slurm script:
 #SBATCH --job-name=tf2-cifar     # create a short name for your job
 #SBATCH --nodes=1                # node count
 #SBATCH --ntasks=1               # total number of tasks across all nodes
-#SBATCH --cpus-per-task=1        # cpu-cores per task (>1 if multi-threaded tasks)
+#SBATCH --cpus-per-task=<num>    # cpu-cores per task (>1 if multi-threaded tasks)
 #SBATCH --mem=4G                 # total memory per node
 #SBATCH --time=00:10:00          # total run time limit (HH:MM:SS)
 
