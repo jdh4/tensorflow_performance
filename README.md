@@ -79,10 +79,11 @@ Below is the Slurm script:
 # set the number of threads
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
-# time in milliseconds each thread should wait after completing the execution of a parallel region
+# time in milliseconds each thread should wait after completing the execution of
+# a parallel region before sleeping
 export KMP_BLOCKTIME=0
 
-# bind threads to cores (Intel MKL-DNN)
+# bind threads to cores
 export KMP_AFFINITY=granularity=fine,compact,0,0
 
 module load anaconda3
