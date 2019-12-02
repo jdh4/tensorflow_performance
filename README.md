@@ -129,7 +129,7 @@ The execution time was found to be largely insensitive to the values of `m` and 
 
 When `tf.debugging.set_log_device_placement(True)` is added we find `Executing op _MklMatMul in device` indicating that an Intel MKL library was used.
 
-## MNIST Example
+## MNIST Example with the Sequential API
 
 Obtain the data:
 
@@ -193,6 +193,143 @@ Here are the timings:
 | 8                          |  70     |   0.4     |    6%               |
 
 The use of multiple threads in this case leads to increased execution times. This may be because the neural network is quite small and there is an overhead penalty for using multiple threads.
+
+## MNIST Example with the Sequential API
+
+Obtain the data:
+
+```
+python -c "import tensorflow as tf; tf.keras.datasets.mnist.load_data()"
+```
+
+Below is the simple MNIST example from the TensorFlow website:
+
+```python
+from __future__ import absolute_import, division, print_function, unicode_literals
+
+import tensorflow as tf
+
+from tensorflow.keras.layers import Dense, Flatten, Conv2D
+from tensorflow.keras import Model
+
+mnist = tf.keras.datasets.mnist
+
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+x_train, x_test = x_train / 255.0, x_test / 255.0
+
+# Add a channels dimension
+x_train = x_train[..., tf.newaxis]
+x_test = x_test[..., tf.newaxis]
+
+train_ds = tf.data.Dataset.from_tensor_slices(
+    (x_train, y_train)).shuffle(10000).batch(32)
+
+test_ds = tf.data.Dataset.from_tensor_slices((x_test, y_test)).batch(32)
+
+class MyModel(Model):
+  def __init__(self):
+    super(MyModel, self).__init__()
+    self.conv1 = Conv2D(32, 3, activation='relu')
+    self.flatten = Flatten()
+    self.d1 = Dense(128, activation='relu')
+    self.d2 = Dense(10, activation='softmax')
+
+  def call(self, x):
+    x = self.conv1(x)
+    x = self.flatten(x)
+    x = self.d1(x)
+    return self.d2(x)
+
+# Create an instance of the model
+model = MyModel()
+
+loss_object = tf.keras.losses.SparseCategoricalCrossentropy()
+
+optimizer = tf.keras.optimizers.Adam()
+
+train_loss = tf.keras.metrics.Mean(name='train_loss')
+train_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='train_accuracy')
+
+test_loss = tf.keras.metrics.Mean(name='test_loss')
+test_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='test_accuracy')
+
+@tf.function
+def train_step(images, labels):
+  with tf.GradientTape() as tape:
+    predictions = model(images)
+    loss = loss_object(labels, predictions)
+  gradients = tape.gradient(loss, model.trainable_variables)
+  optimizer.apply_gradients(zip(gradients, model.trainable_variables))
+
+  train_loss(loss)
+  train_accuracy(labels, predictions)
+
+@tf.function
+def test_step(images, labels):
+  predictions = model(images)
+  t_loss = loss_object(labels, predictions)
+
+  test_loss(t_loss)
+  test_accuracy(labels, predictions)
+
+EPOCHS = 5
+
+for epoch in range(EPOCHS):
+  for images, labels in train_ds:
+    train_step(images, labels)
+
+  for test_images, test_labels in test_ds:
+    test_step(test_images, test_labels)
+
+  template = 'Epoch {}, Loss: {}, Accuracy: {}, Test Loss: {}, Test Accuracy: {}'
+  print(template.format(epoch+1,
+                        train_loss.result(),
+                        train_accuracy.result()*100,
+                        test_loss.result(),
+                        test_accuracy.result()*100))
+
+  # Reset the metrics for the next epoch
+  train_loss.reset_states()
+  train_accuracy.reset_states()
+  test_loss.reset_states()
+  test_accuracy.reset_states()
+```
+
+Below is the Slurm script:
+
+```bash
+#!/bin/bash
+#SBATCH --job-name=tf2-sub       # create a short name for your job
+#SBATCH --nodes=1                # node count
+#SBATCH --ntasks=1               # total number of tasks across all nodes
+#SBATCH --cpus-per-task=<num>    # cpu-cores per task (>1 if multi-threaded tasks)
+#SBATCH --mem=4G                 # total memory per node
+#SBATCH --time=00:05:00          # total run time limit (HH:MM:SS)
+
+export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+
+export KMP_BLOCKTIME=0
+export KMP_AFFINITY=granularity=fine,compact,0,0
+
+module load anaconda3
+conda activate tf2-cpu
+
+srun python sub.py
+```
+
+
+Here are the timings:
+
+| cpus-per-task (or threads)| execution time (s) | speed-up ratio |  parallel efficiency |
+|:--------------------------:|:--------:|:---------:|:-------------------:|
+| 1                          |  216     |   1.0     |   100%              |
+| 2                          |  121     |   1.8     |   89%               | 
+| 4                          |  75     |   2.9     |   72%               |
+| 8                          |  68     |   3.2     |   40%               |
+| 16                         |  61     |   3.5     |   22%               |
+| 32                         |  40     |   5.4     |    17%               |
+
+Execution times were taken from `seff` as the "Job Wall-clock time". The data was generated on Adroit.
 
 ## CIFAR10 Example
 
