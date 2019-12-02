@@ -131,6 +131,12 @@ When `tf.debugging.set_log_device_placement(True)` is added we find `Executing o
 
 ## MNIST Example
 
+Obtain the data:
+
+```
+python -c "import tensorflow as tf; tf.keras.datasets.mnist.load_data()"
+```
+
 Below is the simple MNIST example from the TensorFlow website:
 
 ```python
