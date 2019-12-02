@@ -1,4 +1,6 @@
-# Tensorflow Performance (CPU-only)
+# TensorFlow Performance (CPU-only)
+
+This page provides examples of how to use TensorFlow on CPUs. In general, performance is better when GPUs are used but if you don't have access then CPUs can be used. TensorFlow has many CPU kernels that are multithreaded (e.g., matrix multiplication). This means they can take advantage of our multi-core CPUs. There is limited support for using more than one node to train a TensorFlow model.
 
 ## Installation
 
