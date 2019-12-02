@@ -79,7 +79,7 @@ Below is the Slurm script:
 # set the number of threads
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
-# allow threads to transition quickly (Intel MKL-DNN)
+# time in milliseconds each thread should wait after completing the execution of a parallel region
 export KMP_BLOCKTIME=0
 
 # bind threads to cores (Intel MKL-DNN)
