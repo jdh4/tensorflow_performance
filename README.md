@@ -130,6 +130,8 @@ The execution time was found to be largely insensitive to the values of `m` and 
 
 When `tf.debugging.set_log_device_placement(True)` is added we find `Executing op _MklMatMul in device` indicating that an Intel MKL library was used.
 
+[Read more](https://software.intel.com/en-us/cpp-compiler-developer-guide-and-reference-intel-compiler-extension-routines-to-openmp) and [more](https://software.intel.com/en-us/cpp-compiler-developer-guide-and-reference-thread-affinity-interface-linux-and-windows) on `KMP_BLOCKTIME` and `KMP_AFFINITY`.
+
 ## MNIST Example with the Sequential API
 
 Obtain the data:
