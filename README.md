@@ -160,7 +160,7 @@ model.evaluate(x_test, y_test)
 
 Below is the Slurm script:
 
-```python
+```bash
 #!/bin/bash
 #SBATCH --job-name=tf2-mnist     # create a short name for your job
 #SBATCH --nodes=1                # node count
@@ -256,8 +256,7 @@ conda activate tf2-cpu
 srun python cifar.py
 ```
 
-Note that `MKL_NUM_THREADS` could be used instead of `OMP_NUM_THREADS`. The parallelism is believed to be coming from routines
-in the Intel MKL-DNN library. If the number of threads is not set then the job runs very slowly requiring more than 10 minutes to complete.
+Note that `MKL_NUM_THREADS` could be used instead of `OMP_NUM_THREADS`. The parallelism is believed to be coming from routines in the Intel MKL-DNN library. If the number of threads is not set then the job runs very slowly requiring more than 10 minutes to complete.
 
 | cpus-per-task (or threads)| execution time (s) | speed-up ratio |  parallel efficiency |
 |:--------------------------:|:--------:|:---------:|:-------------------:|
