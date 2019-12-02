@@ -1,6 +1,6 @@
 # TensorFlow Performance (CPU-only)
 
-This page provides examples of how to use TensorFlow on CPUs. In general, performance is better when GPUs are used. TensorFlow has many CPU kernels that are multithreaded (e.g., matrix multiplication). This means they can take advantage of our multi-core CPUs. There is limited support for using more than 1 node to train a TensorFlow model. All examples here only work on 1 node.
+This page provides examples of how to use TensorFlow on CPUs. TensorFlow has many CPU kernels that are multithreaded (e.g., matrix multiplication). This means they can take advantage of our multi-core CPUs. There is limited support for using more than 1 node to train a TensorFlow model. All examples here only work on 1 node. In general, performance is better when GPUs are used so if you access to GPU nodes then skip this page and start there.
 
 ## Installation
 
@@ -12,6 +12,7 @@ $ conda create --name tf2-cpu tensorflow=2.0
 Here are selected packages that are installed:
 
 ```
+...
 blas               pkgs/main/linux-64::blas-1.0-mkl
 ...
 intel-openmp       pkgs/main/linux-64::intel-openmp-2019.4-243
@@ -32,7 +33,7 @@ We see that several packages based on the Intel Math kernel Library (MKL) are in
 
 ## Parallelism
 
-The starting point for taking advantage of parallelism in TensorFlow on CPUs is to try to vary the number of threads via `cpus-per-task`. It is important to set `OMP_NUM_THREADS` in the Slurm script. One can also set tuning parameters of the Intel MKL-DNN library. Naively setting `ntasks` to a value greater than 1 will lead to the same code being run `ntasks` times instead of the work being divided over `ntasks` tasks. The same is true for `nodes`. To learn more about the limited support offered for working with multiple nodes see [MultiWorkerMirroredStrategy](https://www.tensorflow.org/tutorials/distribute/multi_worker_with_keras).
+The starting point for taking advantage of parallelism in TensorFlow on CPUs is to increase the number of threads via `cpus-per-task`. It is important to set `OMP_NUM_THREADS` in the Slurm script. One can also set tuning parameters of the Intel MKL-DNN library. Naively setting `ntasks` to a value greater than 1 will lead to the same code being run `ntasks` times instead of the work being divided over `ntasks` tasks. The same is true for `nodes`. To learn more about the limited support offered for working with multiple nodes see [MultiWorkerMirroredStrategy](https://www.tensorflow.org/tutorials/distribute/multi_worker_with_keras).
 
 ## Matrix Multiplication Example
 
@@ -90,6 +91,8 @@ conda activate tf2-cpu
 srun python mm.py
 ```
 
+The measured timings are below:
+
 | cpus-per-task (or threads)| execution time (s) | speed-up ratio |  parallel efficiency |
 |:--------------------------:|:--------:|:---------:|:-------------------:|
 | 1                          |  20.1    |   1.0     |   100%              |
@@ -99,7 +102,7 @@ srun python mm.py
 | 16                         |  1.8     |   11.2    |   70%               |
 | 32                         |  1.0     |   20.1    |   63%               |
 
-The calculation was performed on Adroit using a square matrix of size 10000. 
+The calculation was performed on Adroit using a 10k x 10k matrix in double precision.
 
 When the following line is added:
 
@@ -122,7 +125,9 @@ tf.config.threading.set_inter_op_parallelism_threads(m)
 tf.config.threading.set_intra_op_parallelism_threads(n)
 ```
 
-The execution time was found to be largely insensitive to the values of `m` and `n`. When `tf.debugging.set_log_device_placement(True)` is added we find `Executing op _MklMatMul in device` indicating that an Intel MKL library was used.
+The execution time was found to be largely insensitive to the values of `m` and `n`.
+
+When `tf.debugging.set_log_device_placement(True)` is added we find `Executing op _MklMatMul in device` indicating that an Intel MKL library was used.
 
 ## MNIST Example
 
