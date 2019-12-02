@@ -32,7 +32,7 @@ We see that several packages based on the Intel Math kernel Library (MKL) are in
 
 ## Parallelism
 
-The starting point for taking advantage of parallelism in TensorFlow on CPUs is to try to vary the number of threads via `cpus-per-task`. It is important to set `OMP_NUM_THREADS` in the Slurm script. One can also set tuning parameters of the Intel MKL-DNN library. Naively setting `ntasks` to a value greater than 1 will lead to the same code being run `ntasks` times instead of the work being divided over `ntasks` tasks. For working with multiple nodes see [tf.distribute.experimental.MultiWorkerMirroredStrategy](https://www.tensorflow.org/tutorials/distribute/multi_worker_with_keras).
+The starting point for taking advantage of parallelism in TensorFlow on CPUs is to try to vary the number of threads via `--cpus-per-task`. It is important to set `OMP_NUM_THREADS` in the Slurm script. One can also set tuning parameters of the Intel MKL-DNN library. Naively setting `ntasks` to a value greater than 1 will lead to the same code being run `--ntasks` times instead of the work being divided over `ntasks` tasks. The same is true for `--nodes`. To learn more about the limited support offered for working with multiple nodes see [MultiWorkerMirroredStrategy](https://www.tensorflow.org/tutorials/distribute/multi_worker_with_keras).
 
 ## Matrix Multiplication Example
 
