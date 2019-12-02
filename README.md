@@ -418,3 +418,5 @@ Note that `MKL_NUM_THREADS` could be used instead of `OMP_NUM_THREADS`. The para
 | 32                         |  119     |   1.6     |    5%               |
 
 Execution times were taken from `seff` as the "Job Wall-clock time". The data was generated on Adroit.
+
+Can anything be done with `tf.distribute`? Right now only one device (`CPU:0`) is recognized.
