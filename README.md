@@ -175,7 +175,14 @@ Below is the Slurm script:
 #SBATCH --mem=4G                 # total memory per node
 #SBATCH --time=00:02:00          # total run time limit (HH:MM:SS)
 
+# set the number of threads
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+
+# allow threads to transition quickly (Intel MKL-DNN)
+export KMP_BLOCKTIME=0
+
+# bind threads to cores (Intel MKL-DNN)
+export KMP_AFFINITY=granularity=fine,compact,0,0
 
 module load anaconda3
 conda activate tf2-cpu
@@ -187,10 +194,10 @@ Here are the timings:
 
 | cpus-per-task (or threads)| execution time (s) | speed-up ratio |  parallel efficiency |
 |:--------------------------:|:--------:|:---------:|:-------------------:|
-| 1                          |  31     |   1.0     |   100%              |
-| 2                          |  49     |   0.6     |   32%               | 
-| 4                          |  37     |   0.8     |   21%               |
-| 8                          |  70     |   0.4     |    6%               |
+| 1                          |  31     |   1.00     |   100%              |
+| 2                          |  42     |   0.73     |    36%               | 
+| 4                          |  37     |   0.84     |    21%               |
+| 8                          |  41     |   0.76     |    9%               |
 
 The use of multiple threads in this case leads to increased execution times. This may be because the neural network is quite small and there is an overhead penalty for using multiple threads.
 
