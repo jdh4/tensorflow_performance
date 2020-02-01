@@ -10,6 +10,8 @@ $ module load anaconda3
 $ conda create --name tf2-cpu tensorflow=2.0 <package-2> <package-3> ... <package-N>
 ```
 
+If you go over quota then run the `checkquota` command and follow the link at the bottom to request more space. You can also use `prefix` as show <a href="https://github.com/PrincetonUniversity/gpu_programming_intro/tree/master/03_your_first_gpu_job">here</a>.
+
 Here are selected packages that are installed:
 
 ```
