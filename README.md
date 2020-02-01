@@ -1,12 +1,13 @@
 # TensorFlow Performance (CPU-only)
 
-This page provides examples of how to use TensorFlow on CPUs. TensorFlow has many CPU kernels that are multithreaded (e.g., matrix multiplication). This means they can take advantage of our multi-core CPUs. There is very limited support for using more than 1 node to train a TensorFlow model. All examples here only work on 1 node. In general, performance is better when GPUs are used so if you have access to GPU nodes then skip this page and start there.
+This page provides examples of how to use TensorFlow on CPUs. TensorFlow has many CPU kernels that are multithreaded (e.g., matrix multiplication). This means they can take advantage of our multi-core CPUs. There is very limited support for using more than 1 node to train a TensorFlow model. All examples here only work on 1 node but can use all the CPU-cores on the node. In general, performance is better when GPUs are used so if you have access to GPU nodes then skip this page and start there.
 
 ## Installation
 
 ```
+$ ssh adroit  # or another cluster
 $ module load anaconda3
-$ conda create --name tf2-cpu tensorflow=2.0
+$ conda create --name tf2-cpu tensorflow=2.0 <package-2> <package-3> ... <package-N>
 ```
 
 Here are selected packages that are installed:
@@ -92,7 +93,7 @@ conda activate tf2-cpu
 srun python mm.py
 ```
 
-The measured timings are below:
+Make sure you replace `<num>` with a number in the Slurm script above. The measured timings are below:
 
 | cpus-per-task (or threads)| execution time (s) | speed-up ratio |  parallel efficiency |
 |:--------------------------:|:--------:|:---------:|:-------------------:|
