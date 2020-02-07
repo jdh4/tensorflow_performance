@@ -350,7 +350,7 @@ Obtain the data:
 
 ```bash
 $ module load anaconda3
-$ conda activate tf2-gpu
+$ conda activate tf2-cpu
 $ python -c "import tensorflow as tf; tf.keras.datasets.cifar10.load_data()"
 ```
 
